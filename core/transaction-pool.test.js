@@ -37,8 +37,10 @@ describe ('transactionpool', ()=>{
       expect(tp.validTransactions()).toEqual(validTransactions)
     })
     it('ctears transactions',()=>{
-      tp.clear();
-      expect(tp.transactions).toEqual([])
+      console.log(tp.transactions.length);
+      tp.clear(validTransactions);
+      console.log(tp.transactions.length);
+      expect(tp.transactions.length).toEqual(3)
     })
   })
 })

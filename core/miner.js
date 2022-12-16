@@ -11,11 +11,9 @@ class Miner {
   mine(){
     const validTransactions = this.transactionpool.validTransactions();
     const block = this.blockchain.addBlock(validTransactions);
-    //TODO :removed payment from  addBlock to block submitions
-    validTransactions.push(Transaction.rewordTransaction(this.wallet, Wallet.blockchainWallet()));
-    this.p2pserver.syncChains();
-    this.transactionpool.clear();
-    this.p2pserver.broadcastClearTransactions();
+    this.p2pserver.syncChains(this.wallet, this.transactionpool);
+    this.transactionpool.clear(validTransactions);
+    this.p2pserver.broadcastClearTransactions(validTransactions);
     return block;
   }
 }

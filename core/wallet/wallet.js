@@ -28,10 +28,11 @@ class Wallet {
     this.balance -= amount
     return transaction;
   }
-  calculateBalance(blockchain, transactionPool){
+  calculateBalance(blockchain, pool){
     let balance = this.balance
-    if(transactionPool.transactions.length > 0){
-      transactionPool.transactions.forEach(transaction =>{
+    let transactionPool = pool.validTransactions();
+    if(transactionPool.length > 0){
+      transactionPool.forEach(transaction =>{
         let sender = transaction.input.address === this.publicKey;
         if(sender){
           balance -= transaction.outputs[1].amount;
@@ -65,6 +66,11 @@ class Wallet {
     const blockchainWallet =  new this();
     blockchainWallet.publicKey = 'blockchain-wallet';
     return blockchainWallet
+  }
+  static createRewordTransaction(recipient,transactionPool){
+    const transaction = Transaction.rewordTransaction(recipient, Wallet.blockchainWallet())
+    transactionPool.transactions.push (transaction);
+    return transaction
   }
 }
 module.exports=Wallet

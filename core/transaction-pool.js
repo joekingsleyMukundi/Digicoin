@@ -24,9 +24,11 @@ class TransactionPool {
       return  transaction
     })
   }
-  clear(){
-    //TODO #8 : Clear Invalid transactions  and transactions that have been mined
-    this.transactions=[];
+  clear(transactions){
+    //TODO #1 : Clear Invalid transactions  and transactions that have been mined
+    transactions.forEach(trans => {
+      this.transactions = this.transactions.filter(transaction => transaction !== trans)
+    });
   }
 }
 

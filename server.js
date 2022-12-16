@@ -88,23 +88,20 @@ app.use(errorHandler);
 // port
 const PORT = process.env.PORT||3000;
 //db connection and serve
-// const mongoUrl = 'mongodb+srv://digiadmin:Xriw32kHORdUKNga@digicoincluster.brmfkiv.mongodb.net/DigicoinDb';
-// const dbConn = async()=>{
-//   try {
-//     await connect(mongoUrl,{
-//       useNewUrlParser: true,
-//       useUnifiedTopology: true,
-//     });
-//     app.listen(PORT,()=>{
-//       console.log(`server live at port ${PORT}`);
-//     });
-//     console.log('db active');
-//   } catch (error) {
-//     console.error(error);
-//   }
-// };
-// dbConn();
-app.listen(PORT,()=>{
-  console.log(`server live at port ${PORT}`);
-});
+const mongoUrl = 'mongodb+srv://digiadmin:Xriw32kHORdUKNga@digicoincluster.brmfkiv.mongodb.net/DigicoinDb';
+const dbConn = async()=>{
+  try {
+    await connect(mongoUrl,{
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+    });
+    app.listen(PORT,()=>{
+      console.log(`server live at port ${PORT}`);
+    });
+    console.log('db active');
+  } catch (error) {
+    console.error(error);
+  }
+};
+dbConn();
 p2pServer.listen();

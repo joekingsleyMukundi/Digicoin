@@ -1,12 +1,16 @@
 const Blockchain = require('./blockchain');
 const Block = require('./block');
+const TransactionPool = require('./transaction-pool');
+const Wallet = require('./wallet/wallet');
 
 describe('Blockchain', ()=>{
-  let bc, bc2;
+  let bc, bc2, tp, wallet;
 
   beforeEach(()=>{
     bc = new Blockchain();
     bc2 = new Blockchain();
+    tp = new TransactionPool();
+    wallet= new Wallet();
   });
   it('bc starts with genesis block', ()=>{
     expect(bc.chain[0]).toEqual(Block.genesis())
@@ -34,12 +38,12 @@ describe('Blockchain', ()=>{
   })
   it('replaces the chain with a valid chain',()=>{
     bc2.addBlock("foo")
-    bc.replaceChain(bc2.chain)
+    bc.replaceChain(bc2.chain, wallet, tp)
     expect(bc.chain).toEqual(bc2.chain)
   })
   it('does not replace chain with less than or equal to that chain',()=>{
     bc.addBlock('foo')
-    bc.replaceChain(bc2.chain)
+    bc.replaceChain(bc2.chain, wallet, tp)
 
     expect(bc.chain).not.toEqual(bc2.chain)
   })

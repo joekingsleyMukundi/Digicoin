@@ -49,33 +49,34 @@ class P2pServer {
       const data = JSON.parse(message);
       switch (data.type) {
         case MESSAGE_TYPES.chain:
-          this.blockchain.replaceChain(data.chain, data.wallet)
+          this.blockchain.replaceChain(data.chain, data.wallet, data.transactionpool)
           break;
         case MESSAGE_TYPES.transaction:
           this.transactionPool.Addtransaction(data.transaction)
           break;
         case MESSAGE_TYPES.clear_transaction:
-          this.transactionPool.clear()
+          this.transactionPool.clear(data.transactions)
           break;
       }
       
     })
   }
-  sendChain (socket, wallet){
-    socket.send(JSON.stringify({type: MESSAGE_TYPES.chain, chain: this.blockchain.chain, wallet}));
+  sendChain (socket, wallet, transactionpool){
+    socket.send(JSON.stringify({type: MESSAGE_TYPES.chain, chain: this.blockchain.chain, wallet, transactionpool}));
   }
   sendTransaction(socket, transaction){
     socket.send(JSON.stringify({type: MESSAGE_TYPES.transaction, transaction}))
   }
-  syncChains(wallet){
-    this.sockets.forEach(socket => this.sendChain(socket, wallet));
+  syncChains(wallet,transactionpool){
+    this.sockets.forEach(socket => this.sendChain(socket, wallet, transactionpool));
   }
   broadcastTransaction(transaction){
     this.sockets.forEach(socket => this.sendTransaction(socket, transaction));
   }
-  broadcastClearTransactions(){
+  broadcastClearTransactions(transactionsToClear){
     this.sockets.forEach(socket => socket.send(JSON.stringify({
       type: MESSAGE_TYPES.clear_transaction,
+      transactions: transactionsToClear
     })))
   }
 }

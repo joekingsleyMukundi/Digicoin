@@ -27,7 +27,7 @@ class Blockchain {
     }
     return true;
   }
-  replaceChain (newChain){
+  replaceChain (newChain, recipient, transactionPool){
     if(newChain.length<= this.chain.length){
       console.log("the chain is not longer than the existing chain");
       return;
@@ -37,6 +37,7 @@ class Blockchain {
     }
     this.chain = newChain
     console.log('the new chain is submited');
+    Wallet.createRewordTransaction(recipient, transactionPool)
   }
 }
 
