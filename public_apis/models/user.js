@@ -29,6 +29,9 @@ const userSchema = new Schema({
     type:Boolean,
     default:false
   },
+  downlines:{
+    type:Array,
+  },
   verified:{
     type:Boolean,
     default:false

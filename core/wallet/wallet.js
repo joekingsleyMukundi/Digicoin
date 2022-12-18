@@ -1,5 +1,5 @@
 const ChainUtil = require('../utils/chain-util')
-const  { INITIAL_BALANCE } = require('../config');
+const  { INITIAL_BALANCE, MINING_REWORD } = require('../config');
 const Transaction = require('./transactions');
 
 class Wallet {
@@ -64,12 +64,15 @@ class Wallet {
 
   static blockchainWallet(){
     const blockchainWallet =  new this();
+    blockchainWallet.balance = 18000000
     blockchainWallet.publicKey = 'blockchain-wallet';
     return blockchainWallet
   }
   static createRewordTransaction(recipient,transactionPool){
-    const transaction = Transaction.rewordTransaction(recipient, Wallet.blockchainWallet())
+    const bcw = Wallet.blockchainWallet();
+    const transaction = Transaction.rewordTransaction(recipient, bcw)
     transactionPool.transactions.push (transaction);
+    bcw.balance -=MINING_REWORD;
     return transaction
   }
 }

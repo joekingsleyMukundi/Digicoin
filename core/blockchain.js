@@ -37,7 +37,7 @@ class Blockchain {
     }
     this.chain = newChain
     console.log('the new chain is submited');
-    Wallet.createRewordTransaction(recipient, transactionPool)
+    Wallet.createRewordTransaction(recipient, transactionPool);
   }
 }
 

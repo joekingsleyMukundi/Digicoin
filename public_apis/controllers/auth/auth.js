@@ -8,6 +8,8 @@ const User = require('../../models/user');
 const { getUserById, getUserByEmail } = require('../../services/queries');
 const Password = require('../../utils/passwordhasher');
 const { sendMail } = require('../../utils/sendmail');
+const Wallet = require('../../../core/wallet/wallet');
+const WalletModel = require('../../models/wallet');
 exports.register= async (req,res, next)=>{
   const validationErrors = validationResult(req);
   if(!validationErrors.isEmpty()){
@@ -15,9 +17,15 @@ exports.register= async (req,res, next)=>{
     throw new ValidatorError(errors);
   }
   const { username, email, password }= req.body;
+  const referalId = req.query.id;
   try {
     const newUser = new User({ username, email, password })
-    const registerduser =  await newUser.save()
+    const registerduser =  await newUser.save();
+    if(referalId){
+      const upline = await User.findById(referalId);
+      upline.downlines.push(registerduser);
+      await upline.save();
+    }
     const activateurl = `${req.protocol}://127.0.0.1/activate?id=${registerduser.id}`;
     const message  = `Welcome on board lets get you started 'by' activating your account. Please click this link ${activateurl}`;
     const subj = "Acount activation";
@@ -31,11 +39,14 @@ exports.register= async (req,res, next)=>{
 exports.activate= async (req,res,next)=>{
   const user_id = req.query.id;
   getUserById(user_id)
-  .then(user=>{
+  .then(async user=>{
     user.isActive = true;
-    user.save();
+    await user.save();
+    const wallet = new Wallet();
+    const walletData = new WalletModel({keyPair:wallet.keyPair, publicKey:wallet.publicKey});
+    await walletData.save();
     res.status(201).json({
-      message:"user activated!"
+      message:"user wallet created and user activated!"
     })
   })
   .catch(error=>{
@@ -64,10 +75,11 @@ exports.signin= async (req,res, next)=>{
     .sign({
       id:user.id,
       email:user.email,
+      isActive:user.isActive,
       isVerified:user.isVerified,
       isSuspended:user.isSuspended,
     },
-    '',
+    'Mukundijoe254',
     {
       expiresIn: '1d',
     });

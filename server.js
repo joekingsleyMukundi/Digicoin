@@ -7,16 +7,11 @@ const errorHandler = require('./public_apis/middlewares/error_handler')
 const authurls = require('./public_apis/routes/auth/auth');
 const Blockchain = require('./core/blockchain');
 const P2pServer = require('./p2p_server');
-const Wallet = require('./core/wallet/wallet');
 const TransactionPool = require('./core/transaction-pool');
-const Miner = require('./core/miner');
 const app = express();
 const bc = new Blockchain();
-const wallet = new Wallet();
 const tp = new TransactionPool();
 const p2pServer = new P2pServer(bc, tp);
-const miner = new Miner(bc, tp, wallet, p2pServer);
-
 //midddlwares
 app.use(cors());
 app.use(json());
